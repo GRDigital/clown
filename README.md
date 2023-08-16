@@ -12,5 +12,8 @@ Turns this:
 ```
 into this:
 ```rust
-{ let __honk_0 = ::core::clone::Clone::clone(&foo.bar); move || do_call(__honk_0) }
+{
+    let __honk_0 = ::core::clone::Clone::clone(&foo.bar);
+    move || do_call(__honk_0)
+}
 ```
