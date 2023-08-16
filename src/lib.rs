@@ -1,5 +1,5 @@
-use quote::quote;
-use syn::visit_mut::VisitMut;
+use quote::{quote, quote_spanned};
+use syn::{visit_mut::VisitMut, spanned::Spanned};
 use std::collections::HashMap;
 
 #[derive(Default)]
@@ -13,7 +13,7 @@ impl syn::visit_mut::VisitMut for Clown {
 			syn::Expr::Macro(syn::ExprMacro { mac, .. }) => {
 				if !mac.path.get_ident().map_or(false, |x| x == "honk") { return syn::visit_mut::visit_expr_mut(self, this_expr); }
 				let expr = syn::parse2::<syn::Expr>(mac.tokens.clone()).expect("honk! macro argument must be an expression");
-				let ident = quote::format_ident!("__honk_{}", self.honks.len());
+				let ident = syn::Ident::new(&format!("__honk_{}", self.honks.len()), this_expr.span());
 				*this_expr = syn::parse_quote!(#ident);
 				self.honks.insert(ident, expr);
 			},
@@ -32,7 +32,8 @@ pub fn clown(_: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_
 	let mut clown = Clown::default();
 	clown.visit_expr_closure_mut(&mut item);
 
-	let honks = clown.honks.into_iter().map(|(ident, expr)| quote! { let #ident = ::core::clone::Clone::clone(&(#expr));});
+	let honks = clown.honks.into_iter().map(|(ident, expr)| { let span = expr.span(); quote_spanned! {span=> let #ident = (#expr).clone();} });
+
 	quote! {
 		{
 			#(#honks)*
