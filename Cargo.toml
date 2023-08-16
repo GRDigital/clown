@@ -6,6 +6,7 @@ license = "MIT"
 description = "approximation of capture-by-closure lambdas"
 readme = "README.md"
 repository = "https://github.com/GRDigital/clown"
+authors = ["GR Digital <contact@grdigital.co.uk>"]
 
 [lib]
 proc-macro = true
