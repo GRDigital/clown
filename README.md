@@ -13,7 +13,7 @@ Turns this:
 into this:
 ```rust
 {
-    let __honk_0 = ::core::clone::Clone::clone(&foo.bar);
+    let __honk_0 = (foo.bar).clone();
     move || do_call(__honk_0)
 }
 ```
