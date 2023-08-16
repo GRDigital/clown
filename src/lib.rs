@@ -32,7 +32,7 @@ pub fn clown(_: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_
 	let mut clown = Clown::default();
 	clown.visit_expr_closure_mut(&mut item);
 
-	let honks = clown.honks.into_iter().map(|(ident, expr)| quote! { let #ident = ::core::clone::Clone::clone(&#expr);});
+	let honks = clown.honks.into_iter().map(|(ident, expr)| quote! { let #ident = ::core::clone::Clone::clone(&(#expr));});
 	quote! {
 		{
 			#(#honks)*
